@@ -1,6 +1,3 @@
-# rns
-Rapidly Rotating Neutron Star (RNS)
-
 Rapidly Rotating Neutron Star
 =============================
 
