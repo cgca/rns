@@ -18,8 +18,8 @@ Sources
 
 *   Version 1 This version of the code is best for users who simply wish to input an equation of state and a parameter (such as angular velocity, mass, etc.) and have the computer output a list of the star's properties.
     
-    *   [rns.v1.1c.tar.gz](rns/source/rns.v1.1c.tar.gz) Nick's 1996 version.
-    *   [rns.v1.1d.tar.gz](rns/source/rns.v1.1d.tar.gz) Includes modifications by Sharon Morsink (1997): Prints the star's quadrupole moment (Based on method by [Laarakkers and Poisson (1997)](http://xxx.lanl.gov/abs/gr-qc/9709033)); Units for polytropic stars are corrected.
+    *   [rns.v1.1c.tar.gz](source/rns.v1.1c.tar.gz) Nick's 1996 version.
+    *   [rns.v1.1d.tar.gz](source/rns.v1.1d.tar.gz) Includes modifications by Sharon Morsink (1997): Prints the star's quadrupole moment (Based on method by [Laarakkers and Poisson (1997)](http://xxx.lanl.gov/abs/gr-qc/9709033)); Units for polytropic stars are corrected.
     
       
     
