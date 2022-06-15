@@ -1,0 +1,11 @@
+
+
+                        CHANGES FROM v1.1b TO v1.1c
+                        ----------------------------
+ 
+ 1) Corrected bug in print case 3 for tab. Now potentials are printed out at 
+    every grid point.
+
+
+ 
+

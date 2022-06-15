@@ -1,0 +1,31 @@
+
+                       R N S  v1.1d
+
+ RNS constructs models of rapidly rotating, relativistic stars. 
+
+ Here is a description of the files you should have:
+
+ 1) README : this file
+ 2) Makefile : Unix makefile
+ 3) rns.c : ANSI C source code
+ 4) manual.tex : Latex file of the manual
+ 5) examples.test : several examples with their output
+ 6) HnG.c : C program which converts equations of state
+	    files to the required format
+
+ You will have to download the equation of state files separately.
+
+ In addition, you may find customized Makefiles for specific platforms, e.g.
+ Makefile.alpha (for DEC ALPHA). 
+
+ Before running make, you need to edit the Makefile in order to specify your 
+ compiler and compiling options. If a Makefile.platform  exists for your 
+ machine, you probably only need to rename Makefile.platform to Makefile and 
+ run make. 
+
+ If you need to substantially change the Makefile in order to run it on your
+ machine, I would appreciate it if you could send me your Makefile, so I can
+ include it in future releases.
+  
+ For information on how to use the code, please refer to the accompanying manual. 
+

@@ -1,0 +1,423 @@
+\documentstyle[11pt]{article}
+\topmargin=-.5cm
+\textheight=22cm
+\oddsidemargin=.0cm
+\textwidth=15.8cm
+\baselineskip=18pt
+\def\bee{\begin{equation}}
+\def\ee{\end{equation}}
+\def\<{\noindent }
+
+\begin{document}
+
+\title{\bf Users Manual for RNS}
+\author{ \bf Nikolaos Stergioulas}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+RNS is a code that constructs models of {\it rapidly rotating, relativistic, 
+compact stars} using tabulated equations of state which are supplied by the 
+user.
+The code is written after the KEH method (Komatsu, Eriguchi \& Hachisu, 
+1989) and modifications introduced by Cook, Shapiro \& Teukolsky (1994). 
+It can compute individual models as well as sequences of 
+fixed mass, rest mass, angular velocity or angular momentum models. All models
+assume uniform rotation. You can read more about this code in 
+Stergioulas \& Friedman (1994) and references therein.
+ 
+\section{Compiling the code}
+
+RNS is written in the ANSI C programming language. Machine specific 
+commands were avoided,
+so that the C program should compile on any platform using an ANSI C compiler.
+The source code comes with a Unix {\tt Makefile}. Before running the 
+{\tt Makefile} for the first time, one should check to see if it uses the 
+correct compiler (the default is {\tt cc}) and the correct flags for choosing 
+the ANSI C option (the default is {\tt -std1}), and optimization (default 
+is {\tt -O})
+ - if not, the {\tt Makefile} should be edited. Once the {\tt Makefile} is 
+correct, run {\tt make} to obtain the executable {\tt rns}. If 
+significant changes to the {\tt Makefile} are needed in order to compile it on 
+your platform, please send the changes
+to the author, so that they can be included in future versions.
+
+\section{Supplying the equation of state}
+
+RNS can compute stars with either a polytropic or tabulated 
+equation of state (EOS). 
+The format and units for each type of EOS is described in this 
+section. 
+
+\subsection{Tabulated Equation of State}
+RNS needs a tabulated, zero-temperature equation of state (EOS), as an input, 
+in order to run. 
+You will have to format the EOS file in a specific way, as described here: 
+The first line in the EOS file should contain the number of tabulated points. 
+The remaining lines should consist of four columns - energy 
+density (in ${\rm gr/cm^3}$), pressure (in ${\rm dynes/cm^2}$), enthalpy (in
+${\rm cm^2/s^2}$), and baryon number density (in ${\rm cm^{-3}}$). The 
+{\it enthalpy} is defined as
+
+\bee H(P)=\int_0^P { c^2 dP \over (\epsilon +P)}, \ee
+
+\<where $\epsilon$ is the energy density, $P$ is the pressure and $c$ is the
+speed of light.
+
+The number of points should be limited to 200. Example files 
+(e.g. {\tt eosC}) are supplied with the source code. The EOS file needs to be 
+specified
+using the following flag:
+
+\vspace{0.3cm}
+
+{\tt rns -f} {\it filename}
+
+\vspace{0.3cm}
+
+A program ``HnG.c'' is included which will convert an EOS file 
+tabulated in the form pressure v.s. energy density to the 
+form required by RNS. See the program listing for more details.
+
+\subsection{Polytropic Equations of State}
+
+The default type of equation of state for RNS is tabulated, but RNS
+will also compute polytropic stars. The polytropic equation of
+state is 
+\begin{equation}
+	p = K \rho_0^{1 + 1/n}
+\end{equation}
+where $p$ is the pressure, $\rho_0$ is the baryon mass density,
+$K$ is the polytropic constant, and $n$ is the polytropic index. To 
+specify a polytrope with index $n$, the following command line
+options need to be specified:
+
+\vspace{0.3cm}
+
+{\tt rns -q poly -N} {\it index}
+
+\vspace{0.3cm}
+
+The program uses the dimensionless units described by 
+Cook, Shapiro \& Teukolsky 1994. All quantities are
+reported in dimensionless units if a polytropic star
+is indicated.
+
+
+\section{Specifying model parameters and other options}
+
+RNS has several options which allow you to specify model parameters and choose 
+from different output formats. A model is defined uniquely by specifying two
+parameters - one will always be the central energy density and the other
+can be one of the following: mass, rest mass, angular velocity, 
+angular momentum, or the ratio of the polar coordinate radius to the 
+coordinate equatorial radius ({\it axes ratio}, see definition of coordinates 
+later in the text) .
+
+\vspace{0.3cm}
+  
+\<The parameters are specified using the following flags:
+ 
+\begin{description}
+
+\item{\tt -e} {\it central energy density} in ${\rm gr/cm^3}$
+
+\item{\tt -r} {\it axes ratio}
+
+\item{\tt -m} {\it mass} in ${\rm M}_{\odot}$
+
+\item{\tt -z} {\it rest mass} in ${\rm M_{\odot}}$
+
+\item{\tt -o} {\it angular velocity} in ${\rm 10^4 s^{-1}}$
+
+\item{\tt -j} {\it angular momentum} in ${\rm GM_{\odot}^2/c}$
+ 
+\end{description}
+
+
+
+
+\< Note that if a polytropic star is requested, dimensionless 
+units should be used. Consult the tables given in
+Cook et. al 1994 to find suitable values for these parameters.
+
+\vspace{0.2cm}
+
+\<The code is written so as to directly construct a model when 
+the axes ratio is specified (which is therefore the fastest option). If one 
+specifies a different parameter e.g. mass, the code constructs several (usually 
+more than ten) models by varying the axes ratio, until it finds a model, for 
+which the chosen parameter is within some allowed tolerance of the specified 
+value. The default tolerance is $10^{-4}$ (relative error) and can be changed 
+by using the flag
+
+\vspace{0.3cm}
+
+{\tt -b} {\it tolerance}
+
+\vspace{0.3cm}
+
+\<A smaller tolerance means more models will be constructed.
+
+\vspace{0.2cm}
+
+A model is constructed by iteratively solving the field equations and the 
+hydrostatic equilibrium equation, until the coordinate equatorial radius changes
+by less than a specified relative accuracy. The default accuracy is $10^{-5}$
+and this can be changed by using the flag
+
+\vspace{0.3cm}
+
+{\tt -a} {\it accuracy}
+ 
+\vspace{0.3cm}
+
+\<Convergence is monitored by printing out the relative difference in the 
+coordinate equatorial radius from one iteration to the next. This print-out can 
+be suppressed by using the flag
+
+\vspace{0.3cm}
+
+{\tt -d} 0
+
+\vspace{0.3cm}
+
+\<In rare cases, such as for unstable models of very stiff equations of state,
+the iteration may not, at first, converge. Such cases can easily be fixed by 
+using a relaxation factor in the iteration. A factor of 0.8 usually makes the
+iteration convergent (the default is 1.0, which amounts to no relaxation). 
+It can be specified using
+
+\vspace{0.3cm}
+
+{\tt -c} {\it relaxation factor}
+ 
+\vspace{0.3cm}
+
+\<Specifying the above parameters is not sufficient to get the program started.
+One also needs to select the task that is to be performed.
+
+\section{Tasks}
+
+RNS can perform eight different tasks, which we list below, along with the
+required options for each task:
+
+\begin{description}
+ 
+\item{{\tt -t model}  Computes a model with fixed central energy density 
+                     $\epsilon_c$ and {\it axes ratio}. Requires {\tt -e}
+                     and {\tt -r}} 
+
+\item{{\tt -t gmass}  Computes a model with fixed $\epsilon_c$ and 
+                     {\it gravitational mass}. Requires {\tt -e} and {\tt -m}} 
+
+\item{{\tt -t rmass}  Computes a model with fixed $\epsilon_c$ and 
+                     {\it rest mass}. Requires {\tt -e} and {\tt -z}} 
+
+\item{{\tt -t omega}  Computes a model with fixed $\epsilon_c$ and 
+                     {\it angular velocity}. Requires {\tt -e} and {\tt -o}} 
+ 
+\item{{\tt -t jmoment}  Computes a model with fixed $\epsilon_c$ and 
+                       {\it angular momentum}. Requires {\tt -e} and {\tt -j}} 
+
+\item{{\tt -t static}  For a given $\epsilon_c$ computes the nonrotating model. 
+                      Requires {\tt -e}}. 
+ 
+\item{{\tt -t kepler}  For a given $\epsilon_c$ computes the model with 
+                      Keplerian angular velocity. The default relative 
+                      accuracy is 
+                      $10^{-4}$ and can be changed with {\tt -b} {\it 
+                      tolerance}. Requires {\tt -e}}. 
+  
+\item{\tt -t test}  Computes the test model.
+
+\end{description}
+
+\vspace{0.2cm}
+
+\<To find out if the source code compiled correctly, you can run the test model
+ 
+\vspace{0.2cm}
+
+{\tt rns -f eosC -t test}
+
+\vspace{0.2cm}
+
+\<and compare the output to the file {\tt test.out}.
+
+\vspace{0.2cm}
+
+For specific examples of the above tasks and their output, see the
+file {\tt examples.test}. 
+
+
+\section{Sequences}
+
+You can obtain a sequence of models with the same two parameters fixed 
+(instead of just one model) by specifying a range of central energy 
+densities and the number of models desired. For example
+
+\vspace{0.2cm}
+
+{\tt -e 1e15 -l 3e15 -n 10}
+
+\vspace{0.2cm}
+
+\<will give a sequence of ten models between the central energy densities
+of $10^{15}$ and $3 \times 10^{15}$ ${\rm gr/cm^3}$. The models will be
+equally spaced in $\log \epsilon_c$. You can do this with any of the
+tasks described in the previous section. However, you have to make sure
+that the models you requested actually exist. For example, if you want to 
+compute a sequence of constant rest mass, you should first compute and 
+examine the nonrotating and Keplerian sequences for a wide range of energy 
+densities and then select a sub-range of $\epsilon_c$ for which stars of the 
+given rest mass exist - otherwise, the code will fail to converge.
+ 
+\section{Output}
+
+RNS prints out 17 physical quantities upon succesfull computation of a model.
+These are:
+
+\begin{description}
+
+\item{ $\epsilon_c$ {\it central energy density}}
+\item{ $M$ {\it gravitational mass}}
+\item{ $M_0$ {\it rest mass}}
+\item{ $R_e$ {\it radius at the equator (circumferencial, i.e. $2 \pi R_e$ is 
+the proper circumference) }}
+\item{ $\Omega$ {\it angular velocity}}
+\item{ $\Omega_p$ {\it angular velocity of a particle in circular orbit 
+                      at the equator}}
+\item{ $T/W$ {\it rotational/gravitational energy}}
+\item{ $cJ/GM_{\odot}^2$ {\it angular momentum}}
+\item{ $I$ {\it moment of inertia (except for nonrotating model)}}
+\item{ $\Phi_2$ {\it quadrupole moment (program needs to be compiled
+	on HIGH resolution for this to be accurate)}}
+\item{ $h_+$ {\it height from surface of last stable co-rotating circular 
+               orbit in equatorial plane (circumferencial) - if none, then all 
+              such orbits are stable}}
+\item{ $h_-$ {\it height from surface of last stable counter-rotating circular 
+               orbit in equatorial plane (circumferential) - if none, then all 
+               such orbits are stable}}
+\item{ $Z_p$ {\it polar redshift}}
+\item{ $Z_b$ {\it backward equatorial redshift}}
+\item{ $Z_f$ {\it forward equatorial redshift}}
+\item{ $\omega_c/ \Omega$ {\it ratio of central value of potential $\omega$ to 
+                             $\Omega$}}
+\item{ $r_e$ {\it coordinate equatorial radius }}
+\item{ $r_p/r_e$ {\it axes ratio (polar to equatorial)}}
+
+\end{description} 
+
+\<The following values for the physical constants are used: $c=2.9979 \times
+10^{10} {\rm cm/s^{-1}}$, $G=6.6732 \times 10^{-8} {\rm g^{-1} cm^3 s^2}$, 
+$m_B=1.66 \times 10^{-24} {\rm gr}$, and $M_{\odot}=1.987 \times 10^{33}
+{\rm gr}$.
+The coordinates of the stationary, axisymetric spacetime used to model the 
+compact star are defined through the metric
+
+\bee ds^2=-e^{\gamma+ \rho} \ dt^2 + e^{2 \alpha} \bigl(dr^2 + r^2 d \theta^2 
+          \bigr) + e^{\gamma - \rho} r^2 \sin^2 \theta \bigl( d \phi - \omega dt
+          \bigr)^2. \ee
+
+\<where the potentials $\gamma, \rho, \alpha$ and $\omega$ are functions of 
+$r$ and 
+$\theta$ only. The matter inside the neutron star is approximated by a perfect 
+fluid.
+ 
+\subsection{Printing Formats}
+
+There are two different printing formats:
+
+\begin{description}
+
+\item{{\tt -p 1} is a detailed vertical list of the above quantities (default)}
+\item{{\tt -p 2} is a compact horizontal print-out of the same quantities,
+                 which is useful when computing sequences}.
+\end{description}
+
+\<In addition to the above quantities, one can print out the values of the
+four metric potentials and the pressure at every grid point with
+
+\vspace{0.2cm}
+  
+{\tt -p 3}
+
+\vspace{0.2cm}
+
+\<This is a very long print out and should be directed to a file rather than to
+the screen. The format is:
+
+\vspace{0.2cm}
+
+ $s=r/(r+r_e)$ \hspace{0.6cm} $\cos \theta$ \hspace{0.6cm} $\rho$ \hspace{0.6cm} 
+$\gamma$ \hspace{0.6cm} $\alpha$ \hspace{0.6cm} $\omega (10^4 {\rm s^{-1}})$ 
+\hspace{0.6cm}  P $(dynes/cm^2)$
+
+\section{Numerical Grid}
+
+\<RNS uses a uniform 2-D grid in the variables $s=r/(r+r_e)$ and $\mu=
+ \cos \theta$. The center is at $s=0$, the equator at $s=0.5$ and infinity at
+$s=1$. The equatorial plane is at $\theta=\pi/2$ while the pole is at $\theta=0$.
+If one uses $SDIV$ points in the $s$-direction and $MDIV$ points in the 
+$\mu$-direction, then the grid points are obtained by the formulas
+
+\bee s[i]=0.9999 \Bigl( {1-i \over SDIV-1} \Bigr), \ee
+
+\bee \mu[j]=\Bigl( {1-j \over MDIV-1} \Bigr). \ee
+
+\<The default grid size is $MDIV \times SDIV=65 \times 129$. You can change this 
+by editing the {\tt Makefile}. If you specify too large a grid size and get a 
+memory segmentation fault, you can fix this by issuing the command 
+
+\vspace{0.2cm}
+
+{\tt limit stacksize unlimited}
+
+\vspace{0.2cm}
+
+\<in a UNIX environment.
+
+\section{Availability}
+
+RNS is available as a public domain program and can be downloaded by anonymous
+ftp from {\tt pauli.phys.uwm.edu} in the directory 
+{\tt /pub/rns}. 
+You can download either {\tt rns}.{\it version}.{\tt tar.Z} or 
+{\tt rns}.{\it version}.{\tt tar.gz}. 
+The code and documentation are also available at the website:
+
+\vspace{0.2cm}
+
+{\tt www.gravity.phys.uwm.edu/Code/rns}
+
+\vspace{0.2cm}
+
+\<Please send any suggestions, comments or
+questions to the author at the following address:
+
+\vspace{0.2cm}
+
+\< \hspace{0.7cm} Nikolaos Stergioulas
+
+\< \hspace{0.7cm} E-mail: niksterg@pauli.phys.uwm.edu 
+
+\section{Acknowledgments}
+
+I am gratefull to John L. Friedman for suggesting this project and for all his
+advice and support. Thanks also go to Scott Koranda for making the source code
+compile correctly on a SUN workstation. This project was supported by NSF
+grant PHY-9105935.
+
+\section{References}
+
+Komatsu H., Eriguchi Y. \& Hachisu I., 1989, {\it MNRAS}, {\bf 237}, 355
+
+\<Cook G.B., Shapiro S.L. \& Teukolsky S.A., 1994, {\it APJ}, {\bf 422}, 227
+
+\<Stergioulas N. \& Friedman J.L., 1994, in press ({\it ApJ}, 1995, May 1)
+
+  
+\end{document}
+

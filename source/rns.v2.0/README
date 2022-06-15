@@ -1,0 +1,28 @@
+rns.v2.0
+
+Index to files:
+
+FILE		DESCRIPTION
+
+main.c	 	An example program which uses the routines in
+		the subsequent files. 
+
+makefile	The makefile for the example. It will produce
+		an executable named "kepler". 
+
+sample.out	Sample output from the program kepler
+
+equil.c 	The routines used to integrate a rapidly rotating 
+		neutron star. 
+
+equil_util.c	Some utility programs used by equil.c
+
+nrutil.c	Numerical Recipes routines used by the program.
+
+HEADER FILES:
+
+consts.h	Constants used by the programs
+
+equil.h,	Function prototypes 
+equil_util.h, 
+nrutil.h  

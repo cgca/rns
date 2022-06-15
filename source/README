@@ -1,0 +1,32 @@
+***************************************************************************
+
+			R N S
+
+		Rapidly Rotating Neutron Star
+
+***************************************************************************
+
+For a detailed description of the versions of the code and an on-line
+user's manual, go to the website:
+
+www.gravity.phys.uwm.edu/Code/rns
+
+
+Contents of /pub/rns:
+
+ README			This file
+ eos			Equation of state library
+ eos.tar.Z
+ eos.tar.gz
+ manual.ps		User's manual for Versions 1.1x
+ manual.tex
+ nst_thesis.ps.gz	Nick Stergioulas' PhD Thesis
+ rns.v1.1c		Version 1.1c  (Look at the website to help
+ rns.v1.1c.tar.Z			you decide whether you should
+ rns.v1.1c.tar.gz			use version 1.1x or 2.0)
+ rns.v1.1d		Version 1.1d
+ rns.v1.1d.tar.Z
+ rns.v1.1d.tar.gz
+ rns.v2.0		Version 2.0   (User's manual for this version
+ rns.v2.0.tar.Z				is available at the website)
+ rns.v2.0.tar.gz
